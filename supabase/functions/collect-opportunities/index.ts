@@ -4,6 +4,8 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const SERPER_API_KEY = Deno.env.get('SERPER_API_KEY')!
 const RSS_URL = 'https://ifpi.edu.br/ultimas-noticias/rss'
+const IBGE_API = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/PI/municipios'
+const MAX_CITY_QUERIES_PER_RUN = 8
 
 const TIPOS_KEYWORDS: Record<string, string[]> = {
   estagio: ['estágio', 'estagio', 'trainee', 'aprendiz'],
@@ -182,6 +184,72 @@ async function collectRSS(): Promise<number> {
   }
 }
 
+async function collectLicitacoesByCity(): Promise<number> {
+  try {
+    const res = await fetch(IBGE_API)
+    if (!res.ok) { console.error('IBGE API error:', res.status); return 0 }
+
+    const cidades: { nome: string }[] = await res.json()
+    const todasCidades = cidades.map((c) => c.nome)
+
+    const { data: existentes } = await supabase
+      .from('opportunities')
+      .select('cidade')
+      .eq('tipo', 'licitacao')
+      .not('cidade', 'is', null)
+
+    const cidadesComDados = new Set(existentes?.map((r) => r.cidade) ?? [])
+
+    const cidadesFaltando = todasCidades.filter((c) => !cidadesComDados.has(c))
+    const escolhidas = cidadesFaltando
+      .sort(() => Math.random() - 0.5)
+      .slice(0, MAX_CITY_QUERIES_PER_RUN)
+
+    if (escolhidas.length === 0) {
+      console.log('Todas as cidades ja possuem dados')
+      return 0
+    }
+
+    console.log(`Buscando licitacoes de ${escolhidas.length} novas cidades: ${escolhidas.join(', ')}`)
+
+    let total = 0
+    for (const cidade of escolhidas) {
+      try {
+        const q = `licitacao prefeitura ${cidade} PI`
+        const r = await fetch('https://google.serper.dev/search', {
+          method: 'POST',
+          headers: { 'X-API-KEY': SERPER_API_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ q, hl: 'pt-br' }),
+        })
+        if (!r.ok) { console.error(`Serper error for ${cidade}: ${r.status}`); continue }
+
+        const data = await r.json()
+        for (const item of data.organic ?? []) {
+          const snippet = item.snippet ?? ''
+          const tipo = detectarTipo(item.title, snippet)
+          const { error } = await supabase.from('opportunities').upsert(
+            {
+              titulo: item.title, descricao: snippet, link: item.link,
+              tipo, fonte: 'serper',
+              orgao: extractOrgao(item.title, snippet),
+              cidade, periodo: extractPeriodo(item.title, snippet),
+              data_publicacao: new Date().toISOString(),
+            },
+            { onConflict: 'link', ignoreDuplicates: true }
+          )
+          if (!error) total++
+        }
+      } catch (err) {
+        console.error(`Error collecting ${cidade}:`, err)
+      }
+    }
+    return total
+  } catch (err) {
+    console.error('IBGE fetch error:', err)
+    return 0
+  }
+}
+
 Deno.serve(async () => {
   console.log('Starting collection...')
 
@@ -191,8 +259,11 @@ Deno.serve(async () => {
   const rssCount = await collectRSS()
   console.log(`RSS: ${rssCount} new items`)
 
+  const licCount = await collectLicitacoesByCity()
+  console.log(`Licitações por cidade: ${licCount} new items`)
+
   return new Response(
-    JSON.stringify({ serper: serperCount, rss: rssCount, total: serperCount + rssCount }),
+    JSON.stringify({ serper: serperCount, rss: rssCount, licitacoes_cidades: licCount, total: serperCount + rssCount + licCount }),
     { headers: { 'Content-Type': 'application/json' } }
   )
 })
