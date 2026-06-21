@@ -9,13 +9,17 @@ export interface Profile {
   updated_at: string
 }
 
+export type OpportunityTipo = 'estagio' | 'bolsa' | 'monitoria' | 'emprego' | 'edital' | 'licitacao'
+
 export interface Opportunity {
   id: string
   titulo: string
   descricao: string | null
   link: string
-  tipo: 'estagio' | 'bolsa' | 'monitoria' | 'emprego' | 'edital'
+  tipo: OpportunityTipo
   fonte: 'serper' | 'rss' | 'manual'
+  orgao: string | null
+  cidade: string | null
   data_publicacao: string
   score_relevancia: number
   created_at: string

@@ -168,7 +168,28 @@
 3. Complete Phase 3: User Story 1 (Visualizar oportunidades)
 4. Complete Phase 4: User Story 2 (Perfil do aluno)
 5. **STOP and VALIDATE**: MVP funcional!
-6. Deploy na Vercel
+6. Deploy frontend
+
+---
+
+## Phase 11: Licitações para Empresas
+
+**Purpose**: Expandir sistema para empresas com licitações públicas
+
+- [ ] T048 [P] Adicionar tipo `licitacao` ao CHECK de opportunities (migration 010)
+- [ ] T049 [P] Adicionar colunas `orgao` e `cidade` na tabela opportunities
+- [ ] T050 [P] Atualizar tipos TypeScript com `OpportunityTipo` e novos campos
+- [ ] T051 [P] Atualizar Edge Function `collect-opportunities` com detecção de licitações (keywords, extração de orgao/cidade)
+- [ ] T052 [P] Adicionar search queries para licitações no seed.sql
+- [ ] T053 Criar página `Licitacoes.tsx` com filtros por cidade e busca por órgão
+- [ ] T054 [P] Adicionar abas de navegação (Oportunidades / Licitações) no App.tsx
+- [ ] T055 [P] Deployar Edge Function atualizada
+- [ ] T056 [P] Aplicar migration 010 no Supabase
+- [ ] T057 Atualizar spec.md com US9 (Licitações para Empresas)
+- [ ] T058 Atualizar plan.md com Phase 11
+- [ ] T059 Atualizar constitution.md com escopo de empresas
+
+**Checkpoint**: Sistema com licitações funcionando
 
 ### Incremental Delivery
 
@@ -177,3 +198,4 @@
 3. US3 + US4 → Filtros e coleta automática
 4. US5 + US6 → Classificação e cadastro manual
 5. US7 + US8 → Notificações e favoritos
+6. US9 → Licitações para empresas

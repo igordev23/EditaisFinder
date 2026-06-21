@@ -137,7 +137,19 @@ supabase/
 - Painel administrativo básico
 - Validação de URL e dados
 
-### Phase 7: Notificações e Favoritos
+### Phase 7: Notificações
+- Edge Function `send-digest` (Resend)
+- Agendamento pg_cron
+
+### Phase 8: Licitações para Empresas
+- Adicionar tipo `licitacao` ao schema do banco
+- Colunas `orgao` e `cidade` na tabela opportunities
+- Edge Function atualizada para coletar licitações via Serper API
+- Página de Licitações com filtro por cidade e órgão
+- Abas na Home para alternar entre "Oportunidades" e "Licitações"
+- Seed data com search queries específicas para licitações
+
+### Phase 9: Favoritos e Compartilhamento
 - Edge Function `send-digest` (Resend)
 - Agendamento pg_cron
 - Tabela `favorites`

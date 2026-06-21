@@ -6,7 +6,11 @@ INSERT INTO public.search_queries (query_string, ativa) VALUES
   ('vaga emprego Piripiri', true),
   ('edital bolsa IFPI', true),
   ('monitoria IFPI 2026', true),
-  ('oportunidade estágio Teresina', true);
+  ('oportunidade estágio Teresina', true),
+  ('licitação prefeitura Piauí 2026', true),
+  ('pregão eletrônico Teresina', true),
+  ('concorrência pública município Piauí', true),
+  ('tomada de preços prefeitura Piauí', true);
 
 -- Oportunidades de exemplo
 INSERT INTO public.opportunities (titulo, descricao, link, tipo, fonte, data_publicacao) VALUES

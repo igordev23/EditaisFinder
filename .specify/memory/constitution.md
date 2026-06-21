@@ -21,11 +21,16 @@ Row Level Security (RLS) no Supabase para proteção a nível de linha. Sem segr
 - **Agendamento:** pg_cron
 - **APIs Externas:** Serper API (buscas web), RSS IFPI (feedparser)
 - **Notificações:** Resend (e-mail)
-- **Deploy:** Vercel (frontend), Supabase CLI (Edge Functions)
+- **Deploy:** Render (frontend), Supabase CLI (Edge Functions)
+
+## Escopo do Sistema
+
+- **Para alunos:** oportunidades de estágio, bolsa, monitoria, emprego e edital
+- **Para empresas:** licitações públicas de prefeituras e órgãos governamentais
 
 ## Qualidade e Testes
 
-- Testes com Jest ou Vitest
+- Testes com Playwright (E2E)
 - Commits seguindo Conventional Commits
 - ESLint + Prettier para formatação
 
@@ -33,4 +38,4 @@ Row Level Security (RLS) no Supabase para proteção a nível de linha. Sem segr
 
 Esta constituição substitui práticas conflitantes. Emendas requerem documentação e aprovação.
 
-**Versão**: 1.0.0 | **Ratificada**: 2026-06-21
+**Versão**: 2.0.0 | **Ratificada**: 2026-06-21

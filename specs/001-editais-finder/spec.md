@@ -112,6 +112,22 @@ Como aluno, quero receber um e-mail diário com novas oportunidades relevantes p
 
 ---
 
+### User Story 9 - Licitações para Empresas (Priority: P2)
+
+Como empresário/empreendedor, quero visualizar licitações públicas de prefeituras e órgãos governamentais para encontrar oportunidades de negócio.
+
+**Why this priority**: Expande o público do sistema para empresas, aumentando o alcance.
+
+**Independent Test**: Acessar a aba "Licitações" e ver lista de licitações ordenadas por data.
+
+**Acceptance Scenarios**:
+1. **Given** que existem licitações cadastradas, **When** o usuário acessa a aba "Licitações", **Then** as licitações são exibidas em ordem decrescente de data de publicação.
+2. **Given** que o usuário seleciona o filtro de cidade, **When** ele escolhe "Teresina", **Then** apenas licitações de Teresina são exibidas.
+3. **Given** que não há licitações cadastradas, **When** a aba é acessada, **Then** é exibida a mensagem "Nenhuma licitação encontrada".
+4. **Given** que o usuário está na aba de licitações, **When** ele clica em uma licitação, **Then** o link externo do edital é aberto.
+
+---
+
 ### User Story 8 - Favoritos e Compartilhamento (Priority: P3)
 
 Como aluno, quero salvar oportunidades como favoritas e gerar links compartilháveis para enviar para colegas.
@@ -148,10 +164,13 @@ Como aluno, quero salvar oportunidades como favoritas e gerar links compartilhá
 - **FR-008**: Sistema MUST permitir cadastro manual por professores autenticados
 - **FR-009**: Sistema MUST permitir salvar favoritos e gerar links compartilháveis
 - **FR-010**: Sistema MUST aplicar RLS para segurança a nível de linha
+- **FR-011**: Sistema MUST exibir licitações públicas separadas das oportunidades para alunos
+- **FR-012**: Sistema MUST coletar licitações automaticamente via Serper API
+- **FR-013**: Sistema MUST permitir filtrar licitações por cidade e órgão
 
 ### Key Entities
 
-- **opportunities**: Título, descrição, link, data_publicação, tipo (estágio/bolsa/monitoria/emprego/edital), fonte (automática/manual), score_relevancia
+- **opportunities**: Título, descrição, link, data_publicação, tipo (estágio/bolsa/monitoria/emprego/edital/licitação), órgão, cidade, fonte (automática/manual), score_relevancia
 - **search_queries**: Query_string, ativa, última_execucao
 - **user_interests**: Relaciona usuário com palavras-chave de interesse
 - **profiles**: Curso, período, áreas de interesse do aluno

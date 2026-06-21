@@ -1,6 +1,6 @@
 # EditaisFinder
 
-Rastreador de oportunidades para alunos do IFPI Campus Piripiri. Centraliza estágios, bolsas, monitorias, empregos e editais em um só lugar.
+Rastreador de oportunidades para alunos do IFPI Campus Piripiri e licitações públicas para empresas. Centraliza estágios, bolsas, monitorias, empregos, editais e licitações em um só lugar.
 
 ## Stack
 
@@ -32,7 +32,7 @@ Este projeto foi desenvolvido seguindo a metodologia **SDD (Spec-Driven Developm
 │   └── e2e/                      # Testes Playwright
 ├── supabase/
 │   ├── functions/                # Edge Functions (collect-opportunities, send-digest)
-│   └── migrations/               # 9 migrations SQL (001 a 009)
+│   └── migrations/               # 11 migrations SQL (001 a 011)
 └── specs/                        # Documentação SDD
 ```
 
@@ -46,6 +46,7 @@ Este projeto foi desenvolvido seguindo a metodologia **SDD (Spec-Driven Developm
 - **Coleta Automatizada:** Edge Function busca oportunidades via Serper API + RSS IFPI (06:00 via pg_cron)
 - **Classificação:** Score de relevância baseado nas palavras-chave de interesse do aluno
 - **Notificações:** E-mail diário com novas oportunidades relevantes (08:00 via pg_cron + Resend)
+- **Licitações:** Seção dedicada para empresas com licitações públicas de prefeituras, filtro por cidade e busca por órgão
 
 ## Deploy
 

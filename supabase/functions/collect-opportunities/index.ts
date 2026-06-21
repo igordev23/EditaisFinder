@@ -11,6 +11,7 @@ const TIPOS_KEYWORDS: Record<string, string[]> = {
   monitoria: ['monitória', 'monitoria', 'monitor'],
   emprego: ['emprego', 'vaga', 'contratação', 'contratacao', 'trabalhe conosco'],
   edital: ['edital', 'processo seletivo', 'chamada pública', 'chamada publica'],
+  licitacao: ['licitação', 'licitacao', 'pregão', 'pregao', 'concorrência', 'concorrencia', 'tomada de preços'],
 }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
@@ -21,6 +22,39 @@ function detectarTipo(titulo: string, descricao: string): string {
     if (keywords.some((k) => texto.includes(k))) return tipo
   }
   return 'edital'
+}
+
+function extractOrgao(titulo: string, snippet: string): string | null {
+  const padroes = [
+    /prefeitura municipal de ([a-záéíóúãõç\s]+)/i,
+    /secretaria (municipal|estadual) (de |da |do )?([a-záéíóúãõç\s]+)/i,
+    /governo (do estado|municipal) de ([a-záéíóúãõç\s]+)/i,
+    /câmara municipal de ([a-záéíóúãõç\s]+)/i,
+    /(\w+\s+\w*\s*-\s*prefeitura)/i,
+  ]
+  for (const p of padroes) {
+    const m = `${titulo} ${snippet}`.match(p)
+    if (m) return m[0].trim()
+  }
+  return null
+}
+
+function extractCidade(titulo: string, snippet: string): string | null {
+  const padroes = [
+    /prefeitura municipal de ([a-záéíóúãõç\s]+?)(?:\s|-|,|$)/i,
+    /município de ([a-záéíóúãõç\s]+?)(?:\s|-|,|\.|$)/i,
+    /cidade de ([a-záéíóúãõç\s]+?)(?:\s|-|,|\.|$)/i,
+    /em ([A-ZÁÉÍÓÚÃÕÇ][a-záéíóúãõç]+)(?:\s|-|,|\.|$)/,
+  ]
+  const texto = `${titulo} ${snippet}`
+  for (const p of padroes) {
+    const m = texto.match(p)
+    if (m && m[1]) {
+      const cid = m[1].trim()
+      if (cid.length > 2 && cid.length < 40) return cid.charAt(0).toUpperCase() + cid.slice(1).toLowerCase()
+    }
+  }
+  return null
 }
 
 async function collectSerper(): Promise<number> {
@@ -52,13 +86,16 @@ async function collectSerper(): Promise<number> {
       const results = data.organic ?? []
 
       for (const item of results) {
+        const tipo = detectarTipo(item.title, item.snippet ?? '')
         const { error } = await supabase.from('opportunities').upsert(
           {
             titulo: item.title,
             descricao: item.snippet,
             link: item.link,
-            tipo: detectarTipo(item.title, item.snippet ?? ''),
+            tipo,
             fonte: 'serper',
+            orgao: tipo === 'licitacao' ? extractOrgao(item.title, item.snippet ?? '') : null,
+            cidade: tipo === 'licitacao' ? extractCidade(item.title, item.snippet ?? '') : null,
             data_publicacao: new Date().toISOString(),
           },
           { onConflict: 'link', ignoreDuplicates: true }
