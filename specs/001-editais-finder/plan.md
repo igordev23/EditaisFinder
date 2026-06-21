@@ -145,9 +145,10 @@ supabase/
 - Adicionar tipo `licitacao` ao schema do banco
 - Colunas `orgao` e `cidade` na tabela opportunities
 - Edge Function atualizada para coletar licitações via Serper API
-- Página de Licitações com filtro por cidade e órgão
+- Página de Licitações com filtro por cidade (via IBGE API - 224 municípios do PI) e órgão
 - Abas na Home para alternar entre "Oportunidades" e "Licitações"
 - Seed data com search queries específicas para licitações
+- Coleta progressiva por cidade: Edge Function consulta IBGE API, descobre cidades sem dados, busca 8 por execução
 
 ### Phase 9: Favoritos e Compartilhamento
 - Edge Function `send-digest` (Resend)

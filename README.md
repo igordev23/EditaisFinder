@@ -46,7 +46,8 @@ Este projeto foi desenvolvido seguindo a metodologia **SDD (Spec-Driven Developm
 - **Coleta Automatizada:** Edge Function busca oportunidades via Serper API + RSS IFPI (06:00 via pg_cron)
 - **Classificação:** Score de relevância baseado nas palavras-chave de interesse do aluno
 - **Notificações:** E-mail diário com novas oportunidades relevantes (08:00 via pg_cron + Resend)
-- **Licitações:** Seção dedicada para empresas com licitações públicas de prefeituras, filtro por cidade e busca por órgão
+- **Licitações:** Seção dedicada para empresas com licitações públicas de prefeituras, filtro dinâmico por cidade (224 municípios do PI via IBGE API) e busca por órgão
+- **Cobertura Completa:** Edge Function coleta progressivamente licitações de todas as 224 cidades do Piauí, 8 por execução, usando a IBGE API como referência
 
 ## Deploy
 

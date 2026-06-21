@@ -168,6 +168,8 @@ Como aluno, quero salvar oportunidades como favoritas e gerar links compartilhá
 - **FR-011**: Sistema MUST exibir licitações públicas separadas das oportunidades para alunos
 - **FR-012**: Sistema MUST coletar licitações automaticamente via Serper API
 - **FR-013**: Sistema MUST permitir filtrar licitações por cidade e órgão
+- **FR-014**: Sistema MUST usar IBGE API para listar dinamicamente todos os municípios do Piauí no filtro de cidades
+- **FR-015**: Sistema MUST coletar licitações de todas as cidades do Piauí progressivamente usando a IBGE API como referência
 
 ### Key Entities
 

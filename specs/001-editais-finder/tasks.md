@@ -176,18 +176,18 @@
 
 **Purpose**: Expandir sistema para empresas com licitações públicas
 
-- [ ] T048 [P] Adicionar tipo `licitacao` ao CHECK de opportunities (migration 010)
-- [ ] T049 [P] Adicionar colunas `orgao` e `cidade` na tabela opportunities
-- [ ] T050 [P] Atualizar tipos TypeScript com `OpportunityTipo` e novos campos
-- [ ] T051 [P] Atualizar Edge Function `collect-opportunities` com detecção de licitações (keywords, extração de orgao/cidade)
-- [ ] T052 [P] Adicionar search queries para licitações no seed.sql
-- [ ] T053 Criar página `Licitacoes.tsx` com filtros por cidade e busca por órgão
-- [ ] T054 [P] Adicionar abas de navegação (Oportunidades / Licitações) no App.tsx
-- [ ] T055 [P] Deployar Edge Function atualizada
-- [ ] T056 [P] Aplicar migration 010 no Supabase
-- [ ] T057 Atualizar spec.md com US9 (Licitações para Empresas)
-- [ ] T058 Atualizar plan.md com Phase 11
-- [ ] T059 Atualizar constitution.md com escopo de empresas
+- [x] T048 [P] Adicionar tipo `licitacao` ao CHECK de opportunities (migration 010)
+- [x] T049 [P] Adicionar colunas `orgao` e `cidade` na tabela opportunities
+- [x] T050 [P] Atualizar tipos TypeScript com `OpportunityTipo` e novos campos
+- [x] T051 [P] Atualizar Edge Function `collect-opportunities` com detecção de licitações (keywords, extração de orgao/cidade)
+- [x] T052 [P] Adicionar search queries para licitações no seed.sql
+- [x] T053 Criar página `Licitacoes.tsx` com filtros por cidade e busca por órgão
+- [x] T054 [P] Adicionar abas de navegação (Oportunidades / Licitações) no App.tsx
+- [x] T055 [P] Deployar Edge Function atualizada
+- [x] T056 [P] Aplicar migration 010 no Supabase
+- [x] T057 Atualizar spec.md com US9 (Licitações para Empresas)
+- [x] T058 Atualizar plan.md com Phase 11
+- [x] T059 Atualizar constitution.md com escopo de empresas
 
 **Checkpoint**: Sistema com licitações funcionando
 
@@ -197,12 +197,12 @@
 
 **Purpose**: Melhorar filtros com período letivo nas oportunidades
 
-- [ ] T060 [P] Adicionar coluna `periodo` na tabela opportunities (migration 012)
-- [ ] T061 [P] Atualizar Edge Function `collect-opportunities` com extração de período
-- [ ] T062 [P] Atualizar RPC `get_opportunities_with_relevance` com suporte a periodo_filter
-- [ ] T063 [P] Adicionar filtro de período na página Home
-- [ ] T064 Exibir badge de período nos cards de oportunidade
-- [ ] T065 Atualizar spec com critérios de aceitação para filtro de período
+- [x] T060 [P] Adicionar coluna `periodo` na tabela opportunities (migration 012)
+- [x] T061 [P] Atualizar Edge Function `collect-opportunities` com extração de período
+- [x] T062 [P] Atualizar RPC `get_opportunities_with_relevance` com suporte a periodo_filter
+- [x] T063 [P] Adicionar filtro de período na página Home
+- [x] T064 Exibir badge de período nos cards de oportunidade
+- [x] T065 Atualizar spec com critérios de aceitação para filtro de período
 
 **Checkpoint**: Filtro de período letivo funcionando
 
@@ -214,3 +214,20 @@
 4. US5 + US6 → Classificação e cadastro manual
 5. US7 + US8 → Notificações e favoritos
 6. US9 → Licitações para empresas
+
+---
+
+## Phase 13: Cobertura Total de Licitações por Cidade
+
+**Purpose**: Garantir que licitações de todas as 224 cidades do Piauí sejam coletadas automaticamente
+
+- [x] T066 [P] Edge Function: consultar IBGE API para listar municípios do PI
+- [x] T067 [P] Edge Function: descobrir cidades sem dados na tabela opportunities
+- [x] T068 [P] Edge Function: buscar 8 cidades por execução (rotação aleatória)
+- [x] T069 Update spec.md com FR-014 (IBGE API no filtro) e FR-015 (coleta progressiva)
+- [x] T070 Update plan.md com coleta progressiva por cidade
+- [x] T071 Update README.md com cobertura completa
+- [x] T072 Deployar Edge Function atualizada
+- [x] T073 Test: 86 licitações de 26 cidades após primeira execução
+
+**Checkpoint**: Todas as 224 cidades do PI cobertas em ~14 dias
