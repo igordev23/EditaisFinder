@@ -1,21 +1,24 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { supabase } from '../services/supabase'
 import SearchInput from '../components/ui/SearchInput'
 import type { Opportunity } from '../types/supabase'
 
 const PAGE_SIZE = 10
 const PERIODOS = ['', '2026', '2026.1', '2026.2', '2025', '2025.1', '2025.2']
+const DEBOUNCE_MS = 300
 
 export default function Licitacoes() {
   const [licitacoes, setLicitacoes] = useState<Opportunity[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [cidade, setCidade] = useState('')
   const [periodo, setPeriodo] = useState('')
   const [cidades, setCidades] = useState<string[]>([])
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
     fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados/PI/municipios')
@@ -23,6 +26,17 @@ export default function Licitacoes() {
       .then((data) => setCidades(data.map((m: { nome: string }) => m.nome).sort()))
       .catch(() => {})
   }, [])
+
+  useEffect(() => {
+    clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => setDebouncedSearch(search), DEBOUNCE_MS)
+    return () => clearTimeout(timerRef.current)
+  }, [search])
+
+  function refinarBusca() {
+    clearTimeout(timerRef.current)
+    setDebouncedSearch(search)
+  }
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -35,8 +49,10 @@ export default function Licitacoes() {
 
       if (cidade) query = query.eq('cidade', cidade)
       if (periodo) query = query.eq('periodo', periodo)
-      if (search) {
-        query = query.or(`titulo.ilike.%${search}%,descricao.ilike.%${search}%,orgao.ilike.%${search}%`)
+      if (debouncedSearch) {
+        query = query.or(
+          `titulo.ilike.%${debouncedSearch}%,descricao.ilike.%${debouncedSearch}%,orgao.ilike.%${debouncedSearch}%,cidade.ilike.%${debouncedSearch}%`
+        )
       }
 
       const from = page * PAGE_SIZE
@@ -60,12 +76,12 @@ export default function Licitacoes() {
     } finally {
       setLoading(false)
     }
-  }, [search, cidade, periodo, page])
+  }, [debouncedSearch, cidade, periodo, page])
 
   useEffect(() => {
     setPage(0)
     load()
-  }, [search, cidade, periodo])
+  }, [debouncedSearch, cidade, periodo])
 
   return (
     <div>
@@ -77,6 +93,7 @@ export default function Licitacoes() {
           <SearchInput
             value={search}
             onChange={setSearch}
+            onSearch={refinarBusca}
             placeholder="Buscar por palavra-chave ou órgão..."
           />
         </div>

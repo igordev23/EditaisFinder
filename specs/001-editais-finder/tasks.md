@@ -231,3 +231,22 @@
 - [x] T073 Test: 86 licitações de 26 cidades após primeira execução
 
 **Checkpoint**: Todas as 224 cidades do PI cobertas em ~14 dias
+
+---
+
+## Phase 14: Busca Reforçada com Debounce e Mais Campos
+
+**Purpose**: Melhorar a busca em oportunidades e licitações com debounce, botão de refinar e mais campos pesquisáveis
+
+- [ ] T074 [P] Atualizar RPC `get_opportunities_with_relevance`: adicionar `orgao` e `cidade` na cláusula WHERE ILIKE
+- [ ] T075 [P] Adicionar botão de busca (🔍) no SearchInput
+- [ ] T076 [P] Implementar debounce de 300ms na Home (search → debouncedSearch)
+- [ ] T077 [P] Implementar debounce de 300ms no Licitacoes
+- [ ] T078 [P] Adicionar `orgao` e `cidade` na busca ILIKE da Home (modo anônimo)
+- [ ] T079 [P] Adicionar `cidade` na busca ILIKE do Licitacoes
+- [ ] T080 [P] Criar migration 015_search_improved.sql
+- [ ] T081 [P] Aplicar migration 015 no Supabase
+- [ ] T082 Atualizar spec.md com FR-016 (debounce/refinar) e FR-017 (busca em 4 campos)
+- [ ] T083 Test: busca por "computador" encontra licitações e oportunidades em todos os campos
+
+**Checkpoint**: Busca mais rápida e precisa em ambas as páginas

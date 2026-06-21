@@ -38,7 +38,7 @@ Este projeto foi desenvolvido seguindo a metodologia **SDD (Spec-Driven Developm
 
 ## Funcionalidades
 
-- **Home:** Listagem de oportunidades com busca por palavra-chave, filtro por tipo, período letivo e paginação
+- **Home:** Listagem de oportunidades com busca por palavra-chave (titulo, descricao, orgao, cidade), filtro por tipo, período letivo, debounce de 300ms, botão de refinar e paginação
 - **Login:** Autenticação via Supabase Auth (e-mail/senha)
 - **Perfil:** Cadastro de curso, período e áreas de interesse
 - **Admin:** Cadastro manual de oportunidades (professores/admin)
@@ -46,7 +46,7 @@ Este projeto foi desenvolvido seguindo a metodologia **SDD (Spec-Driven Developm
 - **Coleta Automatizada:** Edge Function busca oportunidades via Serper API + RSS IFPI (06:00 via pg_cron)
 - **Classificação:** Score de relevância baseado nas palavras-chave de interesse do aluno
 - **Notificações:** E-mail diário com novas oportunidades relevantes (08:00 via pg_cron + Resend)
-- **Licitações:** Seção dedicada para empresas com licitações públicas de prefeituras, filtro dinâmico por cidade (224 municípios do PI via IBGE API) e busca por órgão
+- **Licitações:** Seção dedicada para empresas com licitações públicas de prefeituras, filtro dinâmico por cidade (224 municípios do PI via IBGE API) e busca por palavra-chave (titulo, descricao, orgao, cidade) com debounce e botão de refinar
 - **Cobertura Completa:** Edge Function coleta progressivamente licitações de todas as 224 cidades do Piauí, 8 por execução, usando a IBGE API como referência
 
 ## Deploy

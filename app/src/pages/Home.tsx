@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../services/supabase'
 import FilterBar from '../components/opportunities/FilterBar'
@@ -9,6 +9,7 @@ type OppExtended = Opportunity & { is_favorited?: boolean }
 
 const PAGE_SIZE = 10
 const PERIODOS = ['', '2026', '2026.1', '2026.2', '2025', '2025.1', '2025.2']
+const DEBOUNCE_MS = 300
 
 export default function Home() {
   const [opportunities, setOpportunities] = useState<OppExtended[]>([])
@@ -16,16 +17,29 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [tipo, setTipo] = useState('')
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [periodo, setPeriodo] = useState('')
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
   const [session, setSession] = useState<Session | null>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
     })
   }, [])
+
+  useEffect(() => {
+    clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => setDebouncedSearch(search), DEBOUNCE_MS)
+    return () => clearTimeout(timerRef.current)
+  }, [search])
+
+  function refinarBusca() {
+    clearTimeout(timerRef.current)
+    setDebouncedSearch(search)
+  }
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -40,7 +54,7 @@ export default function Home() {
           {
             user_id: session.user.id,
             tipo_filter: tipo || null,
-            search_text: search || null,
+            search_text: debouncedSearch || null,
             periodo_filter: periodo || null,
             page_size: PAGE_SIZE,
             page_offset: page * PAGE_SIZE,
@@ -56,8 +70,10 @@ export default function Home() {
 
         if (tipo) query = query.eq('tipo', tipo)
         if (periodo) query = query.eq('periodo', periodo)
-        if (search) {
-          query = query.or(`titulo.ilike.%${search}%,descricao.ilike.%${search}%`)
+        if (debouncedSearch) {
+          query = query.or(
+            `titulo.ilike.%${debouncedSearch}%,descricao.ilike.%${debouncedSearch}%,orgao.ilike.%${debouncedSearch}%`
+          )
         }
 
         const from = page * PAGE_SIZE
@@ -84,12 +100,12 @@ export default function Home() {
     } finally {
       setLoading(false)
     }
-  }, [tipo, search, periodo, page, session])
+  }, [tipo, debouncedSearch, periodo, page, session])
 
   useEffect(() => {
     setPage(0)
     load()
-  }, [tipo, search, periodo, session])
+  }, [tipo, debouncedSearch, periodo, session])
 
   useEffect(() => {
     if (page > 0) load()
@@ -122,6 +138,7 @@ export default function Home() {
           <SearchInput
             value={search}
             onChange={setSearch}
+            onSearch={refinarBusca}
             placeholder="Buscar por palavra-chave..."
           />
         </div>

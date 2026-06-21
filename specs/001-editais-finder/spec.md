@@ -158,7 +158,7 @@ Como aluno, quero salvar oportunidades como favoritas e gerar links compartilhá
 - **FR-001**: Sistema MUST permitir cadastro de alunos com curso, período e áreas de interesse
 - **FR-002**: Sistema MUST coletar oportunidades automaticamente via Serper API e RSS IFPI
 - **FR-003**: Sistema MUST exibir lista de oportunidades ordenadas por data
-- **FR-004**: Sistema MUST permitir filtros por tipo, período letivo, localidade, data e palavra-chave
+- **FR-004**: Sistema MUST permitir filtros por tipo, período letivo, localidade, data e palavra-chave com busca em titulo, descricao, orgao e cidade
 - **FR-005**: Sistema MUST classificar oportunidades por relevância baseada no perfil do aluno
 - **FR-006**: Sistema MUST autenticar usuários via Supabase Auth (magic link ou email/senha)
 - **FR-007**: Sistema MUST enviar notificações por e-mail diárias com novas oportunidades
@@ -170,6 +170,8 @@ Como aluno, quero salvar oportunidades como favoritas e gerar links compartilhá
 - **FR-013**: Sistema MUST permitir filtrar licitações por cidade e órgão
 - **FR-014**: Sistema MUST usar IBGE API para listar dinamicamente todos os municípios do Piauí no filtro de cidades
 - **FR-015**: Sistema MUST coletar licitações de todas as cidades do Piauí progressivamente usando a IBGE API como referência
+- **FR-016**: Sistema MUST ter busca com debounce (300ms) e botão de refinar para melhor experiência de pesquisa
+- **FR-017**: Sistema MUST buscar em titulo, descricao, orgao e cidade simultaneamente na pesquisa
 
 ### Key Entities
 
