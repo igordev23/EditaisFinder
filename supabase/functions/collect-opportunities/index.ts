@@ -80,6 +80,28 @@ function extractPeriodo(titulo: string, snippet: string): string | null {
   return null
 }
 
+function extractDataValidade(titulo: string, snippet: string): string | null {
+  const texto = `${titulo} ${snippet}`
+  const padroes = [
+    /(?:até|ate|prazo|data limite|encerramento|validade|inscrições?|inscricao):?\s*(\d{2})[\/](\d{2})[\/](\d{4})/i,
+    /(\d{2})[\/](\d{2})[\/](\d{4})(?:\s*[-,]?\s*(?:até|ate|prazo|data limite|encerramento|validade|abertura))/i,
+    /(\d{2})[\/](\d{2})[\/](\d{4})/,
+  ]
+  for (const p of padroes) {
+    const m = texto.match(p)
+    if (m && m[1] && m[2] && m[3]) {
+      const dia = parseInt(m[1], 10)
+      const mes = parseInt(m[2], 10) - 1
+      const ano = parseInt(m[3], 10)
+      if (dia >= 1 && dia <= 31 && mes >= 0 && mes <= 11 && ano >= 2024) {
+        const d = new Date(ano, mes, dia, 23, 59, 59)
+        if (!isNaN(d.getTime())) return d.toISOString()
+      }
+    }
+  }
+  return null
+}
+
 async function collectSerper(): Promise<number> {
   const { data: queries } = await supabase
     .from('search_queries')
@@ -121,6 +143,7 @@ async function collectSerper(): Promise<number> {
             orgao: tipo === 'licitacao' ? extractOrgao(item.title, snippet) : null,
             cidade: tipo === 'licitacao' ? extractCidade(item.title, snippet) : null,
             periodo: extractPeriodo(item.title, snippet),
+            data_validade: extractDataValidade(item.title, snippet),
             data_publicacao: new Date().toISOString(),
           },
           { onConflict: 'link', ignoreDuplicates: true }
@@ -171,6 +194,7 @@ async function collectRSS(): Promise<number> {
           tipo: detectarTipo(title, desc),
           fonte: 'rss',
           periodo: extractPeriodo(title, descLimpa),
+          data_validade: extractDataValidade(title, descLimpa),
           data_publicacao: pubDate ? new Date(pubDate).toISOString() : new Date().toISOString(),
         },
         { onConflict: 'link', ignoreDuplicates: true }
@@ -233,6 +257,7 @@ async function collectLicitacoesByCity(): Promise<number> {
               tipo, fonte: 'serper',
               orgao: extractOrgao(item.title, snippet),
               cidade, periodo: extractPeriodo(item.title, snippet),
+              data_validade: extractDataValidade(item.title, snippet),
               data_publicacao: new Date().toISOString(),
             },
             { onConflict: 'link', ignoreDuplicates: true }

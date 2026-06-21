@@ -268,3 +268,22 @@
 - [ ] T092 Atualizar docs (plan, README)
 
 **Checkpoint**: Filtro visual por categoria funcionando em ambas as páginas
+
+---
+
+## Phase 16: Data de Validade e Status (Encerradas/Em andamento)
+
+**Purpose**: Extrair prazos de validade das oportunidades e filtrar por status
+
+- [ ] T093 [P] Adicionar funcao extractDataValidade na Edge Function (regex portugues)
+- [ ] T094 [P] Usar data_validade no upsert de collectSerper, collectRSS, collectLicitacoesByCity
+- [ ] T095 [P] Migration 017: coluna data_validade + indice + RPC com status_filter
+- [ ] T096 [P] Deployar Edge Function + aplicar migration
+- [ ] T097 [P] Adicionar data_validade ao tipo Opportunity
+- [ ] T098 [P] Adicionar status filter dropdown (Em andamento/Todas/Encerradas) na Home
+- [ ] T099 [P] Adicionar status filter dropdown no Licitacoes
+- [ ] T100 [P] Badge "Encerrada" (vermelha) e "Fecha em X dias" (amarela) nos cards
+- [ ] T101 Atualizar spec.md com FR-019, FR-020, FR-021
+- [ ] T102 Atualizar docs (plan, README)
+
+**Checkpoint**: Oportunidades expiradas sao ocultadas por padrao, badge de validade nos cards

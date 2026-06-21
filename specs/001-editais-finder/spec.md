@@ -173,6 +173,9 @@ Como aluno, quero salvar oportunidades como favoritas e gerar links compartilhá
 - **FR-016**: Sistema MUST ter busca com debounce (300ms) e botão de refinar para melhor experiência de pesquisa
 - **FR-017**: Sistema MUST buscar em titulo, descricao, orgao e cidade simultaneamente na pesquisa
 - **FR-018**: Sistema MUST oferecer filtro visual por categoria (pills/chips) em Oportunidades e Licitações, com keywords específicas para cada categoria
+- **FR-019**: Sistema MUST extrair data de validade/prazo do texto da oportunidade e armazenar em data_validade
+- **FR-020**: Sistema MUST filtrar oportunidades por status (Em andamento / Todas / Encerradas) baseado em data_validade
+- **FR-021**: Sistema MUST exibir badge "Encerrada" ou "Fecha em X dias" em cards com data_validade
 
 ### Key Entities
 

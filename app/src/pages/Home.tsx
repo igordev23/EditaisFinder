@@ -21,6 +21,7 @@ export default function Home() {
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [categorias, setCategorias] = useState<string[]>([])
+  const [statusFiltro, setStatusFiltro] = useState('abertas')
   const [periodo, setPeriodo] = useState('')
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
@@ -61,6 +62,7 @@ export default function Home() {
             search_text: debouncedSearch || null,
             periodo_filter: periodo || null,
             categoria_keywords: catKw,
+            status_filter: statusFiltro,
             page_size: PAGE_SIZE,
             page_offset: page * PAGE_SIZE,
           }
@@ -75,6 +77,11 @@ export default function Home() {
 
         if (tipo) query = query.eq('tipo', tipo)
         if (periodo) query = query.eq('periodo', periodo)
+        if (statusFiltro === 'abertas') {
+          query = query.or(`data_validade.gte.${new Date().toISOString()},data_validade.is.null`)
+        } else if (statusFiltro === 'expiradas') {
+          query = query.lt('data_validade', new Date().toISOString()).not('data_validade', 'is', null)
+        }
         const catKw = formatCategoriaKeywords(CATEGORIAS_OPORTUNIDADES, categorias)
         const searchParts: string[] = []
         if (debouncedSearch) {
@@ -115,12 +122,12 @@ export default function Home() {
     } finally {
       setLoading(false)
     }
-  }, [tipo, debouncedSearch, categorias, periodo, page, session])
+  }, [tipo, debouncedSearch, categorias, periodo, statusFiltro, page, session])
 
   useEffect(() => {
     setPage(0)
     load()
-  }, [tipo, debouncedSearch, categorias, periodo, session])
+  }, [tipo, debouncedSearch, categorias, periodo, statusFiltro, session])
 
   useEffect(() => {
     if (page > 0) load()
@@ -157,16 +164,19 @@ export default function Home() {
             placeholder="Buscar por palavra-chave..."
           />
         </div>
-        <select
-          value={periodo}
-          onChange={(e) => setPeriodo(e.target.value)}
-          className="border border-gray-300 rounded px-3 py-2 text-sm"
-        >
-          <option value="">Todos os períodos</option>
-          {PERIODOS.filter(Boolean).map((p) => (
-            <option key={p} value={p}>{p}</option>
-          ))}
-        </select>
+          <select value={statusFiltro} onChange={(e) => setStatusFiltro(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2 text-sm">
+            <option value="abertas">Em andamento</option>
+            <option value="todas">Todas</option>
+            <option value="expiradas">Encerradas</option>
+          </select>
+          <select value={periodo} onChange={(e) => setPeriodo(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2 text-sm">
+            <option value="">Todos os períodos</option>
+            {PERIODOS.filter(Boolean).map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
         <FilterBar tipo={tipo} onTipoChange={setTipo} />
       </div>
       <CategoryChips
@@ -205,6 +215,14 @@ export default function Home() {
                       {opp.score_relevancia > 0 && (
                         <span className="text-xs text-green-600">
                           Relevância: {opp.score_relevancia}
+                        </span>
+                      )}
+                      {opp.data_validade && new Date(opp.data_validade) < new Date() && (
+                        <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">Encerrada</span>
+                      )}
+                      {opp.data_validade && new Date(opp.data_validade) > new Date() && (
+                        <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded">
+                          Fecha em {Math.ceil((new Date(opp.data_validade).getTime() - Date.now()) / 86400000)} dias
                         </span>
                       )}
                     </div>

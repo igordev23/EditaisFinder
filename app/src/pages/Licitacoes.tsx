@@ -16,6 +16,7 @@ export default function Licitacoes() {
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [categorias, setCategorias] = useState<string[]>([])
+  const [statusFiltro, setStatusFiltro] = useState('abertas')
   const [cidade, setCidade] = useState('')
   const [periodo, setPeriodo] = useState('')
   const [cidades, setCidades] = useState<string[]>([])
@@ -52,6 +53,11 @@ export default function Licitacoes() {
 
       if (cidade) query = query.eq('cidade', cidade)
       if (periodo) query = query.eq('periodo', periodo)
+      if (statusFiltro === 'abertas') {
+        query = query.or(`data_validade.gte.${new Date().toISOString()},data_validade.is.null`)
+      } else if (statusFiltro === 'expiradas') {
+        query = query.lt('data_validade', new Date().toISOString()).not('data_validade', 'is', null)
+      }
       const catKw = formatCategoriaKeywords(CATEGORIAS_LICITACOES, categorias)
       const searchParts: string[] = []
       if (debouncedSearch) {
@@ -89,12 +95,12 @@ export default function Licitacoes() {
     } finally {
       setLoading(false)
     }
-  }, [debouncedSearch, categorias, cidade, periodo, page])
+  }, [debouncedSearch, categorias, cidade, periodo, statusFiltro, page])
 
   useEffect(() => {
     setPage(0)
     load()
-  }, [debouncedSearch, categorias, cidade, periodo])
+  }, [debouncedSearch, categorias, cidade, periodo, statusFiltro])
 
   return (
     <div>
@@ -110,16 +116,19 @@ export default function Licitacoes() {
             placeholder="Buscar por palavra-chave ou órgão..."
           />
         </div>
-        <select
-          value={periodo}
-          onChange={(e) => setPeriodo(e.target.value)}
-          className="border border-gray-300 rounded px-3 py-2 text-sm"
-        >
-          <option value="">Todos os períodos</option>
-          {PERIODOS.filter(Boolean).map((p) => (
-            <option key={p} value={p}>{p}</option>
-          ))}
-        </select>
+          <select value={statusFiltro} onChange={(e) => setStatusFiltro(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2 text-sm">
+            <option value="abertas">Em andamento</option>
+            <option value="todas">Todas</option>
+            <option value="expiradas">Encerradas</option>
+          </select>
+          <select value={periodo} onChange={(e) => setPeriodo(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2 text-sm">
+            <option value="">Todos os períodos</option>
+            {PERIODOS.filter(Boolean).map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
         <select
           value={cidade}
           onChange={(e) => setCidade(e.target.value)}
@@ -169,6 +178,14 @@ export default function Licitacoes() {
                       )}
                       {lic.cidade && (
                         <span className="text-xs text-gray-400">📍 {lic.cidade}</span>
+                      )}
+                      {lic.data_validade && new Date(lic.data_validade) < new Date() && (
+                        <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">Encerrada</span>
+                      )}
+                      {lic.data_validade && new Date(lic.data_validade) > new Date() && (
+                        <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded">
+                          Fecha em {Math.ceil((new Date(lic.data_validade).getTime() - Date.now()) / 86400000)} dias
+                        </span>
                       )}
                     </div>
                   </div>

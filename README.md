@@ -38,7 +38,7 @@ Este projeto foi desenvolvido seguindo a metodologia **SDD (Spec-Driven Developm
 
 ## Funcionalidades
 
-- **Home:** Listagem de oportunidades com busca por palavra-chave (titulo, descricao, orgao, cidade), filtro por tipo, categoria (chips: Tecnologia, Administrativo, Saúde, Educação, Engenharia), período letivo, debounce de 300ms, botão de refinar e paginação
+- **Home:** Listagem de oportunidades com busca por palavra-chave (titulo, descricao, orgao, cidade), filtro por tipo, categoria (chips), status (Em andamento/Todas/Encerradas), período letivo, debounce de 300ms, botão de refinar e paginação. Badge "Encerrada" ou "Fecha em X dias" em cards com data_validade
 - **Login:** Autenticação via Supabase Auth (e-mail/senha)
 - **Perfil:** Cadastro de curso, período e áreas de interesse
 - **Admin:** Cadastro manual de oportunidades (professores/admin)
@@ -46,7 +46,7 @@ Este projeto foi desenvolvido seguindo a metodologia **SDD (Spec-Driven Developm
 - **Coleta Automatizada:** Edge Function busca oportunidades via Serper API + RSS IFPI (06:00 via pg_cron)
 - **Classificação:** Score de relevância baseado nas palavras-chave de interesse do aluno
 - **Notificações:** E-mail diário com novas oportunidades relevantes (08:00 via pg_cron + Resend)
-- **Licitações:** Seção dedicada para empresas com licitações públicas de prefeituras, filtro dinâmico por cidade (224 municípios do PI via IBGE API), filtro por categoria (chips: Informática, Obras, Veículos, Saúde, Educação, Serviços) e busca por palavra-chave (titulo, descricao, orgao, cidade) com debounce e botão de refinar
+- **Licitações:** Seção dedicada para empresas com licitações públicas de prefeituras, filtro dinâmico por cidade (224 municípios do PI via IBGE API), filtro por categoria (chips), status (Em andamento/Todas/Encerradas) e busca por palavra-chave (titulo, descricao, orgao, cidade) com debounce e botão de refinar. Badge "Encerrada" ou "Fecha em X dias" em cards com data_validade
 - **Cobertura Completa:** Edge Function coleta progressivamente licitações de todas as 224 cidades do Piauí, 8 por execução, usando a IBGE API como referência
 
 ## Deploy
