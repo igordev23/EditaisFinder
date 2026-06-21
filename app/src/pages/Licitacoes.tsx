@@ -4,7 +4,6 @@ import SearchInput from '../components/ui/SearchInput'
 import type { Opportunity } from '../types/supabase'
 
 const PAGE_SIZE = 10
-const CIDADES = ['', 'Teresina', 'Piripiri', 'Parnaíba', 'Picos', 'Floriano', 'São Raimundo Nonato', 'Oeiras', 'Campo Maior']
 const PERIODOS = ['', '2026', '2026.1', '2026.2', '2025', '2025.1', '2025.2']
 
 export default function Licitacoes() {
@@ -14,8 +13,16 @@ export default function Licitacoes() {
   const [search, setSearch] = useState('')
   const [cidade, setCidade] = useState('')
   const [periodo, setPeriodo] = useState('')
+  const [cidades, setCidades] = useState<string[]>([])
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
+
+  useEffect(() => {
+    fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados/PI/municipios')
+      .then((r) => r.json())
+      .then((data) => setCidades(data.map((m: { nome: string }) => m.nome).sort()))
+      .catch(() => {})
+  }, [])
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -60,10 +67,6 @@ export default function Licitacoes() {
     load()
   }, [search, cidade, periodo])
 
-  useEffect(() => {
-    if (page > 0) load()
-  }, [page])
-
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900 mb-4">Licitações</h1>
@@ -93,7 +96,7 @@ export default function Licitacoes() {
           className="border border-gray-300 rounded px-3 py-2 text-sm"
         >
           <option value="">Todas as cidades</option>
-          {CIDADES.filter(Boolean).map((c) => (
+          {cidades.map((c) => (
             <option key={c} value={c}>{c}</option>
           ))}
         </select>
