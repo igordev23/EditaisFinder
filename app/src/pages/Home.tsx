@@ -8,6 +8,7 @@ import type { Opportunity } from '../types/supabase'
 type OppExtended = Opportunity & { is_favorited?: boolean }
 
 const PAGE_SIZE = 10
+const PERIODOS = ['', '2026', '2026.1', '2026.2', '2025', '2025.1', '2025.2']
 
 export default function Home() {
   const [opportunities, setOpportunities] = useState<OppExtended[]>([])
@@ -15,6 +16,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [tipo, setTipo] = useState('')
   const [search, setSearch] = useState('')
+  const [periodo, setPeriodo] = useState('')
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
   const [session, setSession] = useState<Session | null>(null)
@@ -39,6 +41,7 @@ export default function Home() {
             user_id: session.user.id,
             tipo_filter: tipo || null,
             search_text: search || null,
+            periodo_filter: periodo || null,
             page_size: PAGE_SIZE,
             page_offset: page * PAGE_SIZE,
           }
@@ -52,6 +55,7 @@ export default function Home() {
           .select('*', { count: 'exact' })
 
         if (tipo) query = query.eq('tipo', tipo)
+        if (periodo) query = query.eq('periodo', periodo)
         if (search) {
           query = query.or(`titulo.ilike.%${search}%,descricao.ilike.%${search}%`)
         }
@@ -80,12 +84,12 @@ export default function Home() {
     } finally {
       setLoading(false)
     }
-  }, [tipo, search, page, session])
+  }, [tipo, search, periodo, page, session])
 
   useEffect(() => {
     setPage(0)
     load()
-  }, [tipo, search, session])
+  }, [tipo, search, periodo, session])
 
   useEffect(() => {
     if (page > 0) load()
@@ -121,6 +125,16 @@ export default function Home() {
             placeholder="Buscar por palavra-chave..."
           />
         </div>
+        <select
+          value={periodo}
+          onChange={(e) => setPeriodo(e.target.value)}
+          className="border border-gray-300 rounded px-3 py-2 text-sm"
+        >
+          <option value="">Todos os períodos</option>
+          {PERIODOS.filter(Boolean).map((p) => (
+            <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
         <FilterBar tipo={tipo} onTipoChange={setTipo} />
       </div>
 
@@ -145,11 +159,18 @@ export default function Home() {
                   <div className="flex-1">
                     <h2 className="text-lg font-semibold text-gray-900">{opp.titulo}</h2>
                     <p className="text-sm text-gray-500 mt-1">{opp.descricao}</p>
-                    {opp.score_relevancia !== undefined && opp.score_relevancia > 0 && (
-                      <span className="text-xs text-green-600 mt-1 block">
-                        Relevância: {opp.score_relevancia}
-                      </span>
-                    )}
+                    <div className="flex gap-2 mt-1">
+                      {opp.periodo && (
+                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                          {opp.periodo}
+                        </span>
+                      )}
+                      {opp.score_relevancia > 0 && (
+                        <span className="text-xs text-green-600">
+                          Relevância: {opp.score_relevancia}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded whitespace-nowrap">

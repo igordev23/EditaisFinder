@@ -191,6 +191,21 @@
 
 **Checkpoint**: Sistema com licitações funcionando
 
+---
+
+## Phase 12: Filtro de Período Letivo
+
+**Purpose**: Melhorar filtros com período letivo nas oportunidades
+
+- [ ] T060 [P] Adicionar coluna `periodo` na tabela opportunities (migration 012)
+- [ ] T061 [P] Atualizar Edge Function `collect-opportunities` com extração de período
+- [ ] T062 [P] Atualizar RPC `get_opportunities_with_relevance` com suporte a periodo_filter
+- [ ] T063 [P] Adicionar filtro de período na página Home
+- [ ] T064 Exibir badge de período nos cards de oportunidade
+- [ ] T065 Atualizar spec com critérios de aceitação para filtro de período
+
+**Checkpoint**: Filtro de período letivo funcionando
+
 ### Incremental Delivery
 
 1. Setup + Foundation → Base pronta

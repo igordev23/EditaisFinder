@@ -116,7 +116,7 @@ supabase/
 - Carregamento e tratamento de erros
 
 ### Phase 3: Filtros e Busca
-- Filtros por tipo, localidade, data
+- Filtros por tipo, período letivo, localidade, data
 - Campo de busca full-text (PostgreSQL GIN)
 - Paginação ou infinite scroll
 

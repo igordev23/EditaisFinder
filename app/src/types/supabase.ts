@@ -20,6 +20,7 @@ export interface Opportunity {
   fonte: 'serper' | 'rss' | 'manual'
   orgao: string | null
   cidade: string | null
+  periodo: string | null
   data_publicacao: string
   score_relevancia: number
   created_at: string

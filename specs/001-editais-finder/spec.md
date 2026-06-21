@@ -42,7 +42,7 @@ Como aluno, quero me cadastrar com meu curso, período e áreas de interesse par
 
 ### User Story 3 - Filtros e Busca (Priority: P2)
 
-Como aluno, quero filtrar oportunidades por tipo (estágio, bolsa, monitoria, emprego, edital), localidade, data e palavra-chave para encontrar rapidamente o que me interessa.
+Como aluno, quero filtrar oportunidades por tipo (estágio, bolsa, monitoria, emprego, edital), período letivo, localidade, data e palavra-chave para encontrar rapidamente o que me interessa.
 
 **Why this priority**: Melhora a experiência do usuário, mas o sistema já funciona sem filtros.
 
@@ -50,6 +50,7 @@ Como aluno, quero filtrar oportunidades por tipo (estágio, bolsa, monitoria, em
 
 **Acceptance Scenarios**:
 1. **Given** que existem oportunidades de múltiplos tipos, **When** o aluno seleciona o filtro "estágio", **Then** apenas oportunidades de estágio são exibidas.
+2. **Given** que existem oportunidades de múltiplos períodos, **When** o aluno seleciona "2026.1" no filtro de período, **Then** apenas oportunidades desse período são exibidas.
 2. **Given** que o aluno digita uma palavra-chave no campo de busca, **When** ele pressiona Enter, **Then** são exibidas oportunidades cujo título ou descrição contenham a palavra.
 3. **Given** que nenhuma oportunidade corresponde aos filtros, **When** a busca é realizada, **Then** é exibida a mensagem "Nenhum resultado encontrado".
 
@@ -157,7 +158,7 @@ Como aluno, quero salvar oportunidades como favoritas e gerar links compartilhá
 - **FR-001**: Sistema MUST permitir cadastro de alunos com curso, período e áreas de interesse
 - **FR-002**: Sistema MUST coletar oportunidades automaticamente via Serper API e RSS IFPI
 - **FR-003**: Sistema MUST exibir lista de oportunidades ordenadas por data
-- **FR-004**: Sistema MUST permitir filtros por tipo, localidade, data e palavra-chave
+- **FR-004**: Sistema MUST permitir filtros por tipo, período letivo, localidade, data e palavra-chave
 - **FR-005**: Sistema MUST classificar oportunidades por relevância baseada no perfil do aluno
 - **FR-006**: Sistema MUST autenticar usuários via Supabase Auth (magic link ou email/senha)
 - **FR-007**: Sistema MUST enviar notificações por e-mail diárias com novas oportunidades

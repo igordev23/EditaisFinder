@@ -57,6 +57,27 @@ function extractCidade(titulo: string, snippet: string): string | null {
   return null
 }
 
+function extractPeriodo(titulo: string, snippet: string): string | null {
+  const padroes = [
+    /(\d{4}\.\d)\b/,
+    /(\d{4})\/(\d{4})/,
+    /semestre\s*(\d{4})\.?(\d?)/i,
+    /ano\s*(letivo\s*)?(\d{4})/i,
+    /(\d{4})/,
+  ]
+  const texto = `${titulo} ${snippet}`
+  for (const p of padroes) {
+    const m = texto.match(p)
+    if (m) {
+      if (m[1] && m[2] && p.toString().includes('/')) return `${m[1]}/${m[2]}`
+      if (m[1] && p.toString().includes('.')) return m[1]
+      if (m[2] && p.toString().includes('ano')) return m[2]
+      if (m[1] && /^\d{4}$/.test(m[1])) return m[1]
+    }
+  }
+  return null
+}
+
 async function collectSerper(): Promise<number> {
   const { data: queries } = await supabase
     .from('search_queries')
@@ -86,16 +107,18 @@ async function collectSerper(): Promise<number> {
       const results = data.organic ?? []
 
       for (const item of results) {
-        const tipo = detectarTipo(item.title, item.snippet ?? '')
+        const snippet = item.snippet ?? ''
+        const tipo = detectarTipo(item.title, snippet)
         const { error } = await supabase.from('opportunities').upsert(
           {
             titulo: item.title,
-            descricao: item.snippet,
+            descricao: snippet,
             link: item.link,
             tipo,
             fonte: 'serper',
-            orgao: tipo === 'licitacao' ? extractOrgao(item.title, item.snippet ?? '') : null,
-            cidade: tipo === 'licitacao' ? extractCidade(item.title, item.snippet ?? '') : null,
+            orgao: tipo === 'licitacao' ? extractOrgao(item.title, snippet) : null,
+            cidade: tipo === 'licitacao' ? extractCidade(item.title, snippet) : null,
+            periodo: extractPeriodo(item.title, snippet),
             data_publicacao: new Date().toISOString(),
           },
           { onConflict: 'link', ignoreDuplicates: true }
@@ -137,13 +160,15 @@ async function collectRSS(): Promise<number> {
 
       if (!link) continue
 
+      const descLimpa = desc.replace(/<[^>]*>/g, '')
       const { error } = await supabase.from('opportunities').upsert(
         {
           titulo: title.replace(/<[^>]*>/g, ''),
-          descricao: desc.replace(/<[^>]*>/g, ''),
+          descricao: descLimpa,
           link,
           tipo: detectarTipo(title, desc),
           fonte: 'rss',
+          periodo: extractPeriodo(title, descLimpa),
           data_publicacao: pubDate ? new Date(pubDate).toISOString() : new Date().toISOString(),
         },
         { onConflict: 'link', ignoreDuplicates: true }

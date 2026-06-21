@@ -38,7 +38,7 @@ Este projeto foi desenvolvido seguindo a metodologia **SDD (Spec-Driven Developm
 
 ## Funcionalidades
 
-- **Home:** Listagem de oportunidades com busca por palavra-chave, filtro por tipo e paginação
+- **Home:** Listagem de oportunidades com busca por palavra-chave, filtro por tipo, período letivo e paginação
 - **Login:** Autenticação via Supabase Auth (e-mail/senha)
 - **Perfil:** Cadastro de curso, período e áreas de interesse
 - **Admin:** Cadastro manual de oportunidades (professores/admin)
