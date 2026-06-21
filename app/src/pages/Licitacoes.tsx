@@ -1,7 +1,9 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { supabase } from '../services/supabase'
 import SearchInput from '../components/ui/SearchInput'
+import CategoryChips from '../components/opportunities/CategoryChips'
 import type { Opportunity } from '../types/supabase'
+import { CATEGORIAS_LICITACOES, formatCategoriaKeywords } from '../types/categorias'
 
 const PAGE_SIZE = 10
 const PERIODOS = ['', '2026', '2026.1', '2026.2', '2025', '2025.1', '2025.2']
@@ -13,6 +15,7 @@ export default function Licitacoes() {
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [categorias, setCategorias] = useState<string[]>([])
   const [cidade, setCidade] = useState('')
   const [periodo, setPeriodo] = useState('')
   const [cidades, setCidades] = useState<string[]>([])
@@ -49,10 +52,20 @@ export default function Licitacoes() {
 
       if (cidade) query = query.eq('cidade', cidade)
       if (periodo) query = query.eq('periodo', periodo)
+      const catKw = formatCategoriaKeywords(CATEGORIAS_LICITACOES, categorias)
+      const searchParts: string[] = []
       if (debouncedSearch) {
-        query = query.or(
+        searchParts.push(
           `titulo.ilike.%${debouncedSearch}%,descricao.ilike.%${debouncedSearch}%,orgao.ilike.%${debouncedSearch}%,cidade.ilike.%${debouncedSearch}%`
         )
+      }
+      if (catKw) {
+        searchParts.push(
+          catKw.map((kw) => `titulo.ilike.${kw},descricao.ilike.${kw},orgao.ilike.${kw},cidade.ilike.${kw}`).join(',')
+        )
+      }
+      if (searchParts.length > 0) {
+        query = query.or(searchParts.join(','))
       }
 
       const from = page * PAGE_SIZE
@@ -76,12 +89,12 @@ export default function Licitacoes() {
     } finally {
       setLoading(false)
     }
-  }, [debouncedSearch, cidade, periodo, page])
+  }, [debouncedSearch, categorias, cidade, periodo, page])
 
   useEffect(() => {
     setPage(0)
     load()
-  }, [debouncedSearch, cidade, periodo])
+  }, [debouncedSearch, categorias, cidade, periodo])
 
   return (
     <div>
@@ -118,6 +131,11 @@ export default function Licitacoes() {
           ))}
         </select>
       </div>
+      <CategoryChips
+        categorias={CATEGORIAS_LICITACOES}
+        selected={categorias}
+        onToggle={(id) => setCategorias((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id])}
+      />
 
       {loading && page === 0 ? (
         <div className="flex justify-center py-20">

@@ -250,3 +250,21 @@
 - [ ] T083 Test: busca por "computador" encontra licitações e oportunidades em todos os campos
 
 **Checkpoint**: Busca mais rápida e precisa em ambas as páginas
+
+---
+
+## Phase 15: Filtro por Categoria (Chips)
+
+**Purpose**: Adicionar filtros visuais por categoria nas páginas de Oportunidades e Licitações
+
+- [ ] T084 [P] Criar tipo `Categoria` e constantes `CATEGORIAS_LICITACOES` e `CATEGORIAS_OPORTUNIDADES`
+- [ ] T085 [P] Criar componente `CategoryChips` com pills clicáveis
+- [ ] T086 [P] Atualizar RPC `get_opportunities_with_relevance`: parâmetro `categoria_keywords TEXT[]` com ILIKE ANY
+- [ ] T087 [P] Migration 016: novo RPC + search_queries por categoria
+- [ ] T088 [P] Adicionar CategoryChips na Home (Oportunidades)
+- [ ] T089 [P] Adicionar CategoryChips no Licitacoes
+- [ ] T090 [P] Search_queries: 6 categorias licitações + 5 categorias oportunidades
+- [ ] T091 Atualizar spec.md com FR-018 (filtro por categoria)
+- [ ] T092 Atualizar docs (plan, README)
+
+**Checkpoint**: Filtro visual por categoria funcionando em ambas as páginas

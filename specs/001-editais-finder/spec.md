@@ -172,6 +172,7 @@ Como aluno, quero salvar oportunidades como favoritas e gerar links compartilhá
 - **FR-015**: Sistema MUST coletar licitações de todas as cidades do Piauí progressivamente usando a IBGE API como referência
 - **FR-016**: Sistema MUST ter busca com debounce (300ms) e botão de refinar para melhor experiência de pesquisa
 - **FR-017**: Sistema MUST buscar em titulo, descricao, orgao e cidade simultaneamente na pesquisa
+- **FR-018**: Sistema MUST oferecer filtro visual por categoria (pills/chips) em Oportunidades e Licitações, com keywords específicas para cada categoria
 
 ### Key Entities
 

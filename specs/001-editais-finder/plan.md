@@ -137,11 +137,17 @@ supabase/
 - Painel administrativo básico
 - Validação de URL e dados
 
-### Phase 7: Notificações
+### Phase 7: Filtro por Categoria
+- Componente CategoryChips com pills clicáveis (Informática, Obras, Saúde, etc.)
+- RPC atualizado com parâmetro categoria_keywords
+- Search queries por categoria na coleta automatizada
+- Filtro visual em Oportunidades e Licitações
+
+### Phase 8: Notificações
 - Edge Function `send-digest` (Resend)
 - Agendamento pg_cron
 
-### Phase 8: Licitações para Empresas
+### Phase 9: Licitações para Empresas
 - Adicionar tipo `licitacao` ao schema do banco
 - Colunas `orgao` e `cidade` na tabela opportunities
 - Edge Function atualizada para coletar licitações via Serper API
@@ -150,7 +156,7 @@ supabase/
 - Seed data com search queries específicas para licitações
 - Coleta progressiva por cidade: Edge Function consulta IBGE API, descobre cidades sem dados, busca 8 por execução
 
-### Phase 9: Favoritos e Compartilhamento
+### Phase 10: Favoritos e Compartilhamento
 - Edge Function `send-digest` (Resend)
 - Agendamento pg_cron
 - Tabela `favorites`

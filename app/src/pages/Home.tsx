@@ -3,7 +3,9 @@ import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../services/supabase'
 import FilterBar from '../components/opportunities/FilterBar'
 import SearchInput from '../components/ui/SearchInput'
+import CategoryChips from '../components/opportunities/CategoryChips'
 import type { Opportunity } from '../types/supabase'
+import { CATEGORIAS_OPORTUNIDADES, formatCategoriaKeywords } from '../types/categorias'
 
 type OppExtended = Opportunity & { is_favorited?: boolean }
 
@@ -18,6 +20,7 @@ export default function Home() {
   const [tipo, setTipo] = useState('')
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [categorias, setCategorias] = useState<string[]>([])
   const [periodo, setPeriodo] = useState('')
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
@@ -49,6 +52,7 @@ export default function Home() {
       let count: number | null = null
 
       if (session) {
+        const catKw = formatCategoriaKeywords(CATEGORIAS_OPORTUNIDADES, categorias)
         const { data: rpcData, error: rpcError } = await supabase.rpc(
           'get_opportunities_with_relevance',
           {
@@ -56,6 +60,7 @@ export default function Home() {
             tipo_filter: tipo || null,
             search_text: debouncedSearch || null,
             periodo_filter: periodo || null,
+            categoria_keywords: catKw,
             page_size: PAGE_SIZE,
             page_offset: page * PAGE_SIZE,
           }
@@ -70,10 +75,20 @@ export default function Home() {
 
         if (tipo) query = query.eq('tipo', tipo)
         if (periodo) query = query.eq('periodo', periodo)
+        const catKw = formatCategoriaKeywords(CATEGORIAS_OPORTUNIDADES, categorias)
+        const searchParts: string[] = []
         if (debouncedSearch) {
-          query = query.or(
+          searchParts.push(
             `titulo.ilike.%${debouncedSearch}%,descricao.ilike.%${debouncedSearch}%,orgao.ilike.%${debouncedSearch}%`
           )
+        }
+        if (catKw) {
+          searchParts.push(
+            catKw.map((kw) => `titulo.ilike.${kw},descricao.ilike.${kw},orgao.ilike.${kw}`).join(',')
+          )
+        }
+        if (searchParts.length > 0) {
+          query = query.or(searchParts.join(','))
         }
 
         const from = page * PAGE_SIZE
@@ -100,12 +115,12 @@ export default function Home() {
     } finally {
       setLoading(false)
     }
-  }, [tipo, debouncedSearch, periodo, page, session])
+  }, [tipo, debouncedSearch, categorias, periodo, page, session])
 
   useEffect(() => {
     setPage(0)
     load()
-  }, [tipo, debouncedSearch, periodo, session])
+  }, [tipo, debouncedSearch, categorias, periodo, session])
 
   useEffect(() => {
     if (page > 0) load()
@@ -154,6 +169,11 @@ export default function Home() {
         </select>
         <FilterBar tipo={tipo} onTipoChange={setTipo} />
       </div>
+      <CategoryChips
+        categorias={CATEGORIAS_OPORTUNIDADES}
+        selected={categorias}
+        onToggle={(id) => setCategorias((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id])}
+      />
 
       {loading && page === 0 ? (
         <div className="flex justify-center py-20">
