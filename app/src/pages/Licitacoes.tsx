@@ -5,6 +5,7 @@ import type { Opportunity } from '../types/supabase'
 
 const PAGE_SIZE = 10
 const CIDADES = ['', 'Teresina', 'Piripiri', 'Parnaíba', 'Picos', 'Floriano', 'São Raimundo Nonato', 'Oeiras', 'Campo Maior']
+const PERIODOS = ['', '2026', '2026.1', '2026.2', '2025', '2025.1', '2025.2']
 
 export default function Licitacoes() {
   const [licitacoes, setLicitacoes] = useState<Opportunity[]>([])
@@ -12,6 +13,7 @@ export default function Licitacoes() {
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [cidade, setCidade] = useState('')
+  const [periodo, setPeriodo] = useState('')
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
 
@@ -25,6 +27,7 @@ export default function Licitacoes() {
         .eq('tipo', 'licitacao')
 
       if (cidade) query = query.eq('cidade', cidade)
+      if (periodo) query = query.eq('periodo', periodo)
       if (search) {
         query = query.or(`titulo.ilike.%${search}%,descricao.ilike.%${search}%,orgao.ilike.%${search}%`)
       }
@@ -50,12 +53,12 @@ export default function Licitacoes() {
     } finally {
       setLoading(false)
     }
-  }, [search, cidade, page])
+  }, [search, cidade, periodo, page])
 
   useEffect(() => {
     setPage(0)
     load()
-  }, [search, cidade])
+  }, [search, cidade, periodo])
 
   useEffect(() => {
     if (page > 0) load()
@@ -74,6 +77,16 @@ export default function Licitacoes() {
             placeholder="Buscar por palavra-chave ou órgão..."
           />
         </div>
+        <select
+          value={periodo}
+          onChange={(e) => setPeriodo(e.target.value)}
+          className="border border-gray-300 rounded px-3 py-2 text-sm"
+        >
+          <option value="">Todos os períodos</option>
+          {PERIODOS.filter(Boolean).map((p) => (
+            <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
         <select
           value={cidade}
           onChange={(e) => setCidade(e.target.value)}
@@ -110,9 +123,16 @@ export default function Licitacoes() {
                       <p className="text-sm text-indigo-600 mt-1">{lic.orgao}</p>
                     )}
                     <p className="text-sm text-gray-500 mt-1">{lic.descricao}</p>
-                    {lic.cidade && (
-                      <span className="text-xs text-gray-400 mt-1 block">📍 {lic.cidade}</span>
-                    )}
+                    <div className="flex gap-2 mt-1">
+                      {lic.periodo && (
+                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                          {lic.periodo}
+                        </span>
+                      )}
+                      {lic.cidade && (
+                        <span className="text-xs text-gray-400">📍 {lic.cidade}</span>
+                      )}
+                    </div>
                   </div>
                   <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded whitespace-nowrap">
                     licitação
