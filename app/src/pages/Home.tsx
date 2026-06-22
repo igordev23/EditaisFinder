@@ -117,7 +117,7 @@ export default function Home() {
       data = data.filter((o) => {
         if (o.tipo === 'licitacao') return false
         const texto = `${o.titulo} ${o.descricao}`.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        if (/licita|preg|concorr|prefeitura|municipio/.test(texto)) return false
+        if (/licita|preg|concorr|prefeitura|municipio|aquisicao|fornecimento|dispensa/.test(texto)) return false
         return true
       })
 
