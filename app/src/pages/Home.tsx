@@ -68,14 +68,18 @@ export default function Home() {
           }
         )
         if (rpcError) throw rpcError
-        data = (rpcData as OppExtended[]) ?? []
+        data = ((rpcData as OppExtended[]) ?? []).filter((o) => o.tipo !== 'licitacao')
         count = data.length
       } else {
         let query = supabase
           .from('opportunities')
           .select('*', { count: 'exact' })
 
-        if (tipo) query = query.eq('tipo', tipo)
+        if (tipo) {
+          query = query.eq('tipo', tipo)
+        } else {
+          query = query.neq('tipo', 'licitacao')
+        }
         if (periodo) query = query.eq('periodo', periodo)
         if (statusFiltro === 'abertas') {
           query = query.or(`data_validade.gte.${new Date().toISOString()},data_validade.is.null`)
