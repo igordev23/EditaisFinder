@@ -12,8 +12,8 @@ const TIPOS_KEYWORDS: Record<string, string[]> = {
   bolsa: ['bolsa', 'pibic', 'pibiti', 'fomento'],
   monitoria: ['monitória', 'monitoria', 'monitor'],
   emprego: ['emprego', 'vaga', 'contratação', 'contratacao', 'trabalhe conosco'],
-  edital: ['edital', 'processo seletivo', 'chamada pública', 'chamada publica'],
   licitacao: ['licitação', 'licitacao', 'pregão', 'pregao', 'concorrência', 'concorrencia', 'tomada de preços'],
+  edital: ['edital', 'processo seletivo', 'chamada pública', 'chamada publica'],
 }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
@@ -250,11 +250,10 @@ async function collectLicitacoesByCity(): Promise<number> {
         const data = await r.json()
         for (const item of data.organic ?? []) {
           const snippet = item.snippet ?? ''
-          const tipo = detectarTipo(item.title, snippet)
           const { error } = await supabase.from('opportunities').upsert(
             {
               titulo: item.title, descricao: snippet, link: item.link,
-              tipo, fonte: 'serper',
+              tipo: 'licitacao', fonte: 'serper',
               orgao: extractOrgao(item.title, snippet),
               cidade, periodo: extractPeriodo(item.title, snippet),
               data_validade: extractDataValidade(item.title, snippet),
