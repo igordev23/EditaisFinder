@@ -6,8 +6,8 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
   IF (
-    lower(NEW.titulo) ~ 'licita|preg|concorr|prefeitura|municipio|camara|aquisição|aquisicao|fornecimento|dispensa'
-    OR lower(coalesce(NEW.descricao,'')) ~ 'licita|preg|concorr|prefeitura|municipio|aquisição|aquisicao|fornecimento|dispensa'
+    lower(NEW.titulo) ~ 'licita|preg|concorr|prefeitura|municipio|camara|aquisição|aquisicao|fornecimento|dispensa|tce|frota|veículo|veiculo|merenda'
+    OR lower(coalesce(NEW.descricao,'')) ~ 'licita|preg|concorr|prefeitura|municipio|aquisição|aquisicao|fornecimento|dispensa|tce|frota|veículo|veiculo|merenda'
   ) THEN
     NEW.tipo := 'licitacao';
   END IF;
@@ -24,5 +24,5 @@ CREATE TRIGGER trg_reclassificar_licitacao
 
 UPDATE public.opportunities
 SET tipo = 'licitacao'
-WHERE lower(titulo) ~ 'licita|preg|concorr|prefeitura|municipio|aquisição|aquisicao|fornecimento|dispensa'
-   OR lower(coalesce(descricao,'')) ~ 'licita|preg|concorr|prefeitura|municipio|aquisição|aquisicao|fornecimento|dispensa';
+WHERE lower(titulo) ~ 'licita|preg|concorr|prefeitura|municipio|aquisição|aquisicao|fornecimento|dispensa|tce|frota|veículo|veiculo|merenda'
+   OR lower(coalesce(descricao,'')) ~ 'licita|preg|concorr|prefeitura|municipio|aquisição|aquisicao|fornecimento|dispensa|tce|frota|veículo|veiculo|merenda';
