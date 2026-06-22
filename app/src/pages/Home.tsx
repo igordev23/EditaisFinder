@@ -116,10 +116,8 @@ export default function Home() {
 
       data = data.filter((o) => {
         if (o.tipo === 'licitacao') return false
-        const texto = `${o.titulo} ${o.descricao}`.toLowerCase()
-        if (texto.includes('licita') || texto.includes('pregão') || texto.includes('pregao') ||
-            texto.includes('concorrência') || texto.includes('concorrencia') ||
-            texto.includes('prefeitura')) return false
+        const texto = `${o.titulo} ${o.descricao}`.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        if (/licita|preg|concorr|prefeitura|municipio/.test(texto)) return false
         return true
       })
 
