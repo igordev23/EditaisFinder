@@ -8,14 +8,25 @@ Rastreador de oportunidades para alunos do IFPI Campus Piripiri e licitações p
 - **Backend:** Supabase (PostgreSQL + Auth + Edge Functions + pg_cron)
 - **Deploy:** Render (frontend) + Supabase (backend)
 
-## Sobre o `schema.md` / `spec.md`
+## Metodologia SDD com Spec Kit
 
-Este projeto foi desenvolvido seguindo a metodologia **SDD (Spec-Driven Development)** com o fluxo **Spec Kit**. O Spec Kit nomeia o artefato de especificação como `spec.md`, enquanto a atividade acadêmica se refere a ele como `schema.md`. Ambos contêm a mesma informação: os requisitos funcionais, user stories e critérios de aceitação do sistema.
+Este sistema foi desenvolvido como atividade acadêmica seguindo a metodologia **SDD (Spec-Driven Development)** com o fluxo **Spec Kit**. O processo transformou requisitos de um problema real (centralizar oportunidades para alunos do IFPI) em uma aplicação funcional através das etapas:
 
-- `specs/001-editais-finder/spec.md` — especificação funcional (Spec Kit)
-- `specs/001-editais-finder/plan.md` — plano de implementação
-- `specs/001-editais-finder/tasks.md` — roadmap de tarefas
-- `.specify/memory/constitution.md` — regras de tecnologia
+1. **Constituição** — Definição das regras de tecnologia (serverless, SPA, TypeScript, RLS)
+2. **Specify** — Leitura dos requisitos funcionais e geração do `schema.md`
+3. **Plan** — Leitura dos requisitos não funcionais e do schema para gerar o `plan.md`
+4. **Tasks** — Geração do roadmap de implementação
+5. **Implement** — Geração do código final
+
+### Entregáveis
+
+| Artefato | Localização | Descrição |
+|----------|-------------|-----------|
+| `constitution.md` | `.specify/memory/constitution.md` | Regras de tecnologia e princípios do projeto |
+| `schema.md` | `specs/001-editais-finder/schema.md` | Schema do banco de dados (tabelas, índices, funções, RLS) |
+| `plan.md` | `specs/001-editais-finder/plan.md` | Plano de implementação com fases e sequência |
+| `spec.md` | `specs/001-editais-finder/spec.md` | Especificação funcional (user stories, requisitos) |
+| `tasks.md` | `specs/001-editais-finder/tasks.md` | Roadmap de tarefas para implementação |
 
 ## Estrutura do Projeto
 
