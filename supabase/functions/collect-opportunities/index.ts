@@ -274,8 +274,30 @@ async function collectLicitacoesByCity(): Promise<number> {
   }
 }
 
+async function reclassifyExisting() {
+  const { data, error } = await supabase
+    .from('opportunities')
+    .update({ tipo: 'licitacao' })
+    .eq('tipo', 'edital')
+    .or(
+      'titulo.ilike.%licita%,titulo.ilike.%pregao%,'
+      + 'titulo.ilike.%concorrencia%,titulo.ilike.%prefeitura%,'
+      + 'descricao.ilike.%licita%,descricao.ilike.%pregao%,'
+      + 'descricao.ilike.%concorrencia%'
+    )
+
+  if (error) {
+    console.error('Error reclassifying items:', error)
+    return 0
+  }
+  return data?.length ?? 0
+}
+
 Deno.serve(async () => {
   console.log('Starting collection...')
+
+  const reclassCount = await reclassifyExisting()
+  console.log(`Reclassificados: ${reclassCount} items`)
 
   const serperCount = await collectSerper()
   console.log(`Serper: ${serperCount} new items`)
@@ -287,7 +309,7 @@ Deno.serve(async () => {
   console.log(`Licitações por cidade: ${licCount} new items`)
 
   return new Response(
-    JSON.stringify({ serper: serperCount, rss: rssCount, licitacoes_cidades: licCount, total: serperCount + rssCount + licCount }),
+    JSON.stringify({ reclassificados: reclassCount, serper: serperCount, rss: rssCount, licitacoes_cidades: licCount, total: serperCount + rssCount + licCount }),
     { headers: { 'Content-Type': 'application/json' } }
   )
 })
